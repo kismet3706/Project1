@@ -127,15 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DEF.h" />
-    <ClCompile Include="DEF.c" />
-    <ClCompile Include="FUN.c" />
-    <ClCompile Include="pid.c" />
     <ClCompile Include="run.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FUN.h" />
-    <ClInclude Include="pid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
