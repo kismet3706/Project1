@@ -1,60 +1,44 @@
-#include <stdio.h>	
-#include <string.h>
-#include <stdlib.h>	//#define EXIT_SUCCESS 0
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
-typedef enum {
-	PLAYER_ATTACK,
-	PLAYER_MOVE,
-	//.....
-	EVENT_COUNT	//记录事件的总数，写在最后就刚好等于前面的总和；（妙处）
-}GameEventType;
 
-//
-typedef  void (*EventHandler)(const char* playerName);
+/*
+* 可变参数：计算平均数
+* @parm num_args 参数的数量
+* @parm ...可变参数列表，int a, int b ,int c......
+* @return 平均数
+*/
 
-//
-EventHandler eventHanders[EVENT_COUNT];		//函数指针的数组
+double average(int num_args, ...);
 
-//
-void registerEventHander(GameEventType eventType, EventHandler handler);
-void dispatchEvent(GameEventType eventType, const char* playerName);	//派遣事件
 
-//
-void handlePlayerAttack(const char* playerName);
-void handlePlayerMove(const char* playerName);
+int main(void) {
 
-int main(void)
-{
-	registerEventHander(PLAYER_ATTACK, handlePlayerAttack);
-	registerEventHander(PLAYER_MOVE, handlePlayerMove);
-
-	//
-	dispatchEvent(PLAYER_ATTACK, "Kismet");
-	dispatchEvent(PLAYER_MOVE, "Kismet");
-
+	printf("Ave 1,2,3,4 = %.2f\n", average(4, 5, 2, 3, 4));
+	/*printf自带的定义就是有...的
+	_CRT_STDIO_INLINE int __CRTDECL printf(
+		_In_z_ _Printf_format_string_ char const* const _Format,
+		...)
+		*/
+	//日志
+	//snprintf
 	return EXIT_SUCCESS;
-	//#define EXIT_SUCCESS 0----#include <stdlib.h>
 }
 
-void registerEventHander(GameEventType eventType, EventHandler handler) {
-	if (eventType >= 0 && eventType < EVENT_COUNT) {
-		eventHanders[eventType] = handler;	//这里就是event ->Function 在映射
+double average(int num_args, ...) {
+	double sum = 0.0;
+
+	va_list args;
+
+	va_start(args, num_args);
+
+	for (size_t i = 0; i < num_args; i++)
+	{
+		sum += va_arg(args, int);	//va_start会自动获取下一个参数
 	}
-	else {
-		fprintf(stderr, "Invalid eventType: %d\n", eventType);
-	}
-}
 
-void dispatchEvent(GameEventType eventType, const char* playerName) {
-	if (eventHanders[eventType] != NULL) {
-		eventHanders[eventType](playerName);	//这里就是void (*EventHandler)(const char* playerName);
-	}
-}
+	va_end(args);
 
-void handlePlayerAttack(const char* playerName) {
-	printf("%s attacks!\n", playerName);
-}
-
-void handlePlayerMove(const char* playerName) {
-	printf("%s moves!\n", playerName);
+	return num_args > 0 ? sum / num_args : 0;
 }
